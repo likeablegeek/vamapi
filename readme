@@ -1,0 +1,207 @@
+VAMAPI 0.1-2.6.2 (https://github.com/likeablegeek/vamapi)
+PHP REST API for VAM 2.6.2 (http://virtualairlinesmanager.net/)
+
+By: Arman Danesh
+	
+Based on Lumen 5.5
+	
+License:
+
+Copyright (c) 2017 Arman Danesh
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+
+OVERVIEW
+
+VAMAPI provides a REST API to access and work with a virtual airline built on Virtual
+Airlines Manager, or VAM (http://virtualairlinesmanager.net/).
+
+The API provides a range of capabilities:
+
+- Access data about an airline's fleet, hubs, ranks and routes
+- Access data about a pilot -- including completed and booked flights
+- Access NOTAMs
+- Access data about completed flights
+- Book and cancel flights for a pilot
+- Provide filing of manual PIREPs
+
+VAMAPI also is used as the backend for VAMWP (URL) -- a Wordpress plugin for building a
+front-end VAM web site entirely in Wordpress. 
+
+
+DEPENDENCIES
+
+VAMAPI 0.1-2.6.2 has several dependencies:
+
+1 - Works with VAM 2.6.2
+
+This version of VAMAPI is untested with earlier versions of VAM and may not work with
+newer versions if they change data structures
+
+2 - Based on Lumen 5.5
+
+VAMAPI is build on top of the Lumen PHP framework. This version of VAMAPI is built on
+Lumen 5.5. The installation script provided with VAMAPI can install the correct version
+of Lumen.
+
+Lumen 5.5 (and, therefore, this version of VAMAPI) requires:
+
+	PHP >= 7.0
+	OpenSSL PHP Extension
+	PDO PHP Extension
+	Mbstring PHP Extension
+	
+3 - A Web Server
+
+VAMAPI has been tested in a typical Apache virtual host without difficulties. There is
+not reason VAMAPI won't work with Nginx but also in a Laravel Homestead virtual machine.
+
+	
+INSTALLATION -- FIRST STEPS
+
+VAMAPI must be installed on the same server as your VAM installation. Typically you will
+install it as a separate site -- for instance a separate virtual host in Apache or Nginx.
+Configuring Apache or Nginx to work with VAMAPI is not covered here.
+
+Prior to installing VAMAPI, you will need to install the Composer dependency manager
+for PHP if you don't have it installed:
+
+https://getcomposer.org/
+
+Lumen depends on Composer so VAMAPI does as well.
+
+Once Composer is installed, you will need to install the Lumen installer using Composer
+per the Lumen documentation here:
+
+https://lumen.laravel.com/docs/5.5
+
+To install the Lumen installer, use this command:
+
+composer global require "laravel/lumen-installer"
+
+Once this is done, make sure the Composer bin directory is in your PATH. In a Linux or
+Unix environment this will typically be:
+
+~/.composer/vendor/bin
+
+Once this is done, you can install using the installation script provided in the VAMAPI
+installation directory or manually install VAMAPI.
+
+Finally, download the VAMAPI installer ZIP from URL and unzip this in a a directory. This
+is the VAMAPI installer directory -- and not the final directory where your VAMAPI API
+will be installed and run.
+
+
+INSTALLATION SCRIPT
+
+To install with the installation script, decided where you want to install VAMAPI. The
+installation script will create a child directory in this location and install in that
+child directory.
+
+Assuming you want to install VAMAPI in a child directory called "myvamapi" in a new child
+directory of the current directory, run this command:
+
+/path/to/vamapi/installer/directory/install.sh myvamapi
+
+The installer will:
+
+1. Use Composer to create a new myvamapi directory and install a Lumen project in that
+directory with the Lumen dependencies required by VAMAPI
+
+2. Copy the VAMAPI source files from the sources subdirectory in the VAMAPI installer
+directory to the appropriate locations in the myvamapi directory
+
+
+MANUAL INSTALLATION
+
+To install manually, use the following steps:
+
+1. In the location where you want to create the VAMAPI directory, create a Lumen project
+for your installation. If you want to call this "myvamapi", use this command:
+
+lumen new myvamapi
+
+2. Copy the VAMAPI source files from the VAMAPI installer directory to your myvamapi Lumen
+project as follows:
+
+- Copy all files in source/controllers/ to myvamapi/app/Http/Controllers
+- Copy all files in source/middleware/ to myvamapi/app/Http/Middleware/
+- Copy all files in source/providers/ to myvamapi/app/Providers/
+- Copy all files in source/bootstrap/ to myvamapi/bootstrap/
+- Copy all files in source/routes/ to myvamapi/routes/
+- Copy source/.env.example to myvamapi/.env
+- Copy source/Composer.json to myvamapi/
+
+
+In all cases, replace existing files in the myvamapi Lumen project with the these files
+from the source/ directory in the VAMAPI installer directory.
+
+3. Update and install Lumen and its dependencies using Composer. First, change your
+current directory to the vamapi directory then use this command:
+
+composer update --no-scripts
+
+
+CONFIGURATION
+
+To configure your VAMAPI installation, you need to edit the .env file in your VAMAPI
+directory. The values you need to consider are:
+
+- APP_KEY: Lumen requires a unique 32-character encryption key -- create one using any
+method you prefer
+- AUTH_TOKEN: VAMAPI uses a simple authentication scheme as outlined below; this requires
+a unique key of any length -- create one using any method you prefer; it is recommended
+this be at least 32 characters but preferably longer
+- AUTH_IP: VAMAPI authentication can restrict access to a defined list of IP addresses
+which are specified in this value as a comma-delimited list of IP addresses
+
+
+AUTHENTICATION IN VAMAPI
+
+Authentication in VAMAPI uses two components:
+
+1 - A unique authentication token specified in the AUTH_TOKEN configuration value; this
+can be any unique string of character although a long, random string is advised. This
+authentication token must be passed to the API on every HTTP GET request using the
+Api-Token HTTP header.
+
+2 - VAMAPI restricts access to the clients coming from a specified list of IP addresses
+defined as a comma-delimited list of IP addresses in the AUTH_IP configuration value.
+
+The concept behind the VAMAPI architecture is that it would not be used as an API for
+end-user applications -- but rather for access by other applications running as part of
+a virtual airline toolset. As such, a single shared key and small list of IP addresses
+provides a simple, functional and secure access-control methodology.
+
+In principle, a more complex authentication and access control mechanism could be
+implemented as well as -- in theory -- authentication of individual users against the
+VAM user database. This is not currently on the VAMAPI roadmap -- but could be
+contributed.
+
+To extend the authentication and authorisation mechanism, look at the
+AuthServiceProvider.php file in the VAMAPI source code.
+
+
+NOTES
+
+Depending on the owner and permissions on your VAMAPI directory, you may experience errors
+when accessing the API. A key requirement is that the storage subdirectory is writeable
+by the web server user. In an Ubuntu or Debian environment running Apache, this is
+typically the www-data user, for example. In this case, you would change the owner of the
+directory to www-data:
+
+chown -R www-data storage
+
+This is just an example and you will need to use the appropriate command for your
+environment.
