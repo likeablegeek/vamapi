@@ -60,12 +60,28 @@
 	
 		if (env('VAMAPI_USER_MAP',false) == "true") {
 
-			$user = app('db')->select("select vam_id from vamapi_user_map where external_id=:pilot",['pilot'=>$userid]);
+			$user = app('db')->select("select vam_id from vamapi_user_map where external_id=:external_id",['external_id'=>$userid]);
 			return $user[0]->vam_id;
 		
 		} else {
 		
 			return $userid;
+			
+		}
+	
+	}
+	
+	// Check if a user is an admin
+	function is_vam_admin($userid) {
+	
+		if (env('VAMAPI_USER_MAP',false) == "true") {
+		
+			$user = app('db')->select("select admin from vamapi_user_map where external_id=:external_id",['external_id'=>$userid]);
+			return $user[0]->admin;
+		
+		} else {
+		
+			return 0;
 			
 		}
 	

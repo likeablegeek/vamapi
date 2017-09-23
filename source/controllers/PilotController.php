@@ -68,14 +68,25 @@ class PilotController extends Controller
 	*/
 
 	/* Register a pilot with the specified discord ID and related to the VAM callsign */
-	public function register_pilot($external_id,$vam_callsign) {
+	public function register_pilot($admin_id,$external_id,$vam_callsign) {
 
-		$pilot = app('db')->select("select gvauser_id from gvausers gu where gu.callsign=:vam_callsign",['vam_callsign'=>$vam_callsign]);
-                $vam_id = $pilot[0]->gvauser_id;
+		if (is_vam_admin($admin_id)) {
+		
+			$pilot = app('db')->select("select gvauser_id from gvausers gu where gu.callsign=:vam_callsign",['vam_callsign'=>$vam_callsign]);
+			$vam_id = $pilot[0]->gvauser_id;
 
-		$register = app('db')->insert('insert into vamapi_user_map (external_id,vam_id) values (:external_id,:vam_id)', ['external_id'=>$external_id,'vam_id'=>$vam_id]);
+			$register = app('db')->insert('insert into vamapi_user_map (external_id,vam_id) values (:external_id,:vam_id)', ['external_id'=>$external_id,'vam_id'=>$vam_id]);
 
-		return 0;
+			return 0;
+			
+		} else {
+		
+			return 1;
+			
+		}
+		
+
+//		return 0;
 
 	}
 

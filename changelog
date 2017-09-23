@@ -23,6 +23,10 @@ limitations under the License.
 
 CHANGE LOG
 
+0.3.0-2.6.2
+
+- Added admin user access control to register_pilot function
+
 0.2-2.6.2
 
 - Updated to correct management of external user mapping for VAMWP and DISCORDVA

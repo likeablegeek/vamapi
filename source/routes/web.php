@@ -43,7 +43,7 @@ $router->get('/', function () use ($router) {
 // Register new discord user with VAM and map to VAM pilot user
 // **TODO** Should only be available authorised admin users -- not regular pilots
 $router->get(
-	'/pilots/register/{discord_id}/{vam_callsign}', 
+	'/pilots/register/{admin_id}/{external_id}/{vam_callsign}', 
 	'PilotController@register_pilot'
 );
 
