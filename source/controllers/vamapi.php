@@ -54,6 +54,22 @@
 	$this->va_date_format = $params[0]->date_format;
 	$this->va_time_format = $params[0]->time_format;
 	$this->auto_approval = $params[0]->auto_approval;
+	
+	// Get pilot callsign based on .env VAMAPI_USER_MAP attribute
+	function get_pilot_callsign($userid) {
+	
+		if (env('VAMAPI_USER_MAP',false) == "true") {
+
+			$user = app('db')->select("select vam_id from vamapi_user_map where external_id=:pilot",['pilot'=>$userid]);
+			return $user[0]->vam_id;
+		
+		} else {
+		
+			return $userid;
+			
+		}
+	
+	}
 
 ?>
 

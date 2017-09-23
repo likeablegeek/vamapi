@@ -2,7 +2,7 @@
 
 /*
 
-	VAMAPI 0.1-2.6.2 (https://github.com/likeablegeek/vamapi)
+	VAMAPI 0.2-2.6.2 (https://github.com/likeablegeek/vamapi)
 	PHP REST API for VAM 2.6.2 (http://virtualairlinesmanager.net/)
 
 	By: Arman Danesh
@@ -90,8 +90,7 @@ class FlightController extends Controller
 	/* Return list of flight available for the pilot to book */
 	public function available_flights($pilot) {
 
-		$user = app('db')->select("select vam_id from discord_vam_map where discord_id=:pilot",['pilot'=>$pilot]);
-		$vam_id = $user[0]->vam_id;
+		$vam_id = get_pilot_callsign($pilot);
 
 		$pilot_route = app('db')->select("select route_id from gvausers gu where gu.gvauser_id=:vam_id",['vam_id'=>$vam_id]);
 
@@ -143,8 +142,7 @@ class FlightController extends Controller
 	/* Return list of aircraft available for a pilot to book on a specified flight */
 	public function available_aircraft($pilot,$flight) {
 
-		$user = app('db')->select("select vam_id from discord_vam_map where discord_id=:pilot",['pilot'=>$pilot]);
-		$vam_id = $user[0]->vam_id;
+		$vam_id = get_pilot_callsign($pilot);
 
 		$route = app('db')->select("select route_id from routes where flight=:flight",['flight'=>$flight]);
 		$route_id = $route[0]->route_id;
@@ -182,8 +180,7 @@ class FlightController extends Controller
 	/* Book a flight with a specified aircraft for a specified pilot */
 	public function book_flight($pilot,$flight,$aircraft) {
 
-		$user = app('db')->select("select vam_id from discord_vam_map where discord_id=:pilot",['pilot'=>$pilot]);
-		$vam_id = $user[0]->vam_id;
+		$vam_id = get_pilot_callsign($pilot);
 
 		$route = app('db')->select("select route_id from routes where flight=:flight",['flight'=>$flight]);
 		$route_id = $route[0]->route_id;
@@ -240,8 +237,7 @@ class FlightController extends Controller
 	/* Pirep a flight */
 	public function pirep_flight($pilot,$date,$aircraft,$departure,$arrival,$distance,$time,$fuel,$comments) {
 
-		$user = app('db')->select("select vam_id from discord_vam_map where discord_id=:pilot",['pilot'=>$pilot]);
-		$vam_id = $user[0]->vam_id;
+		$vam_id = get_pilot_callsign($pilot);
 
 		$charter = null;
 		$route_id = null;
@@ -413,8 +409,7 @@ class FlightController extends Controller
 	/* Cancel a flight for the specified pilot using a specified aircraft */
 	public function cancel_flight($pilot,$flight,$aircraft) {
 
-		$user = app('db')->select("select vam_id from discord_vam_map where discord_id=:pilot",['pilot'=>$pilot]);
-		$vam_id = $user[0]->vam_id;
+		$vam_id = get_pilot_callsign($pilot);
 
 		$route = app('db')->select("select route_id from routes where flight=:flight",['flight'=>$flight]);
 		$route_id = $route[0]->route_id;

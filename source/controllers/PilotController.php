@@ -2,7 +2,7 @@
 
 /*
 
-	VAMAPI 0.1-2.6.2 (https://github.com/likeablegeek/vamapi)
+	VAMAPI 0.2-2.6.2 (https://github.com/likeablegeek/vamapi)
 	PHP REST API for VAM 2.6.2 (http://virtualairlinesmanager.net/)
 
 	By: Arman Danesh
@@ -68,12 +68,12 @@ class PilotController extends Controller
 	*/
 
 	/* Register a pilot with the specified discord ID and related to the VAM callsign */
-	public function register_pilot($discord_id,$vam_callsign) {
+	public function register_pilot($external_id,$vam_callsign) {
 
 		$pilot = app('db')->select("select gvauser_id from gvausers gu where gu.callsign=:vam_callsign",['vam_callsign'=>$vam_callsign]);
                 $vam_id = $pilot[0]->gvauser_id;
 
-		$register = app('db')->insert('insert into discord_vam_map (discord_id,vam_id) values (:discord_id,:vam_id)', ['discord_id'=>$discord_id,'vam_id'=>$vam_id]);
+		$register = app('db')->insert('insert into vamapi_user_map (external_id,vam_id) values (:external_id,:vam_id)', ['external_id'=>$external_id,'vam_id'=>$vam_id]);
 
 		return 0;
 
@@ -82,8 +82,7 @@ class PilotController extends Controller
 	/* Return a pilot's profile */
 	public function profile($pilot) {
 
-		$user = app('db')->select("select vam_id from discord_vam_map where discord_id=:pilot",['pilot'=>$pilot]);
-		$vam_id = $user[0]->vam_id;
+		$vam_id = get_pilot_callsign($pilot);
 
 		$profile = app('db')->select("select *, 
 						date_format(register_date,'%Y-%m-%d') as register_date 
@@ -111,8 +110,7 @@ class PilotController extends Controller
 	/* Return a list of flights flown by a pilot */
 	public function completed_flights($pilot) {
 
-		$user = app('db')->select("select vam_id from discord_vam_map where discord_id=:pilot",['pilot'=>$pilot]);
-		$vam_id = $user[0]->vam_id;
+		$vam_id = get_pilot_callsign($pilot);
 
 		$flights = app('db')->select("select a1.iso_country as country_dep, 
 						a2.iso_country as country_arr ,
@@ -183,8 +181,7 @@ class PilotController extends Controller
 	/* Return a list of flights booked by a pilot */
 	public function booked_flights($pilot) {
 
-		$user = app('db')->select("select vam_id from discord_vam_map where discord_id=:pilot",['pilot'=>$pilot]);
-		$vam_id = $user[0]->vam_id;
+		$vam_id = get_pilot_callsign($pilot);
 
 		$flights = app('db')->select("select a3.iso_country as alt_country, 
 						a3.name as alt_name,a1.name as dep_name, 

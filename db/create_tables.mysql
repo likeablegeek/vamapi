@@ -1,0 +1,11 @@
+CREATE TABLE `vamapi_user_map` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `external_id` varchar(255) NOT NULL DEFAULT '',
+  `vam_id` int(11) NOT NULL DEFAULT '0',
+  `admin` int(11) DEFAULT '0',
+  PRIMARY KEY (`external_id`),
+  KEY `vam_id` (`vam_id`),
+  KEY `id` (`id`),
+  KEY `external_id` (`external_id`)
+);
+

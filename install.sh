@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#	VAMAPI 0.1-2.6.2 (https://github.com/likeablegeek/vamapi)
+#	VAMAPI 0.2-2.6.2 (https://github.com/likeablegeek/vamapi)
 #	PHP REST API for VAM 2.6.2 (http://virtualairlinesmanager.net/)
 #
 #	By: Arman Danesh
