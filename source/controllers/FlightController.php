@@ -183,25 +183,23 @@ class FlightController extends Controller
 		$vam_id = get_pilot_callsign($pilot);
 
 		$route = app('db')->select("select route_id from routes where flight=:flight",['flight'=>$flight]);
+		if (count($route) < 1) { return response()->json(["Booking failed. The specified route does not exist."]); }
 		$route_id = $route[0]->route_id;
-
+		
 		$plane = app('db')->select("select fleet_id from fleets where registry=:aircraft",['aircraft'=>$aircraft]);
+		if (count($plane) < 1) { return response()->json(["Booking failed. The specified aircraft does not exist."]); }
 		$plane_id = $plane[0]->fleet_id;
 
 		$reserves = app('db')->select("select * from reserves where gvauser_id=:vam_id",['vam_id'=>$vam_id]);
-
 		if (count($reserves) > 0) { return response()->json(["Booking failed. You already have a flight booked."]); }
 
 		$route_booked = app('db')->select("select route_id from gvausers where route_id=:route_id", ['route_id'=>$route_id]);
-
 		if (count($route_booked) > 0) { return response()->json(["Booking failed. Route is already booked."]); }
 
 		$plane_booked = app('db')->update("UPDATE fleets set booked=1, gvauser_id=:vam_id, booked_at=now() where fleet_id=:plane_id and booked=0",['vam_id'=>$vam_id, 'plane_id'=>$plane_id]);
-
 		if ($plane_booked < 1) { return response()->json("Booking failed. The aircraft is already booked."); }
 
 		$flight_booked = app('db')->update("update gvausers set route_id=:route_id where gvauser_id=:vam_id",['route_id'=>$route_id, 'vam_id'=>$vam_id]);
-
 		if ($flight_booked < 1) { return response()->json(["Booking failed. Failed to reserve route for user."]); }
 
 		$plane_data = app('db')->select("select * from fleets f inner join fleettypes ft on (f.fleettype_id = ft.fleettype_id) and f.fleet_id=:plane_id", ['plane_id'=>$plane_id]);
