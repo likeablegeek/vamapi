@@ -243,8 +243,6 @@ class FlightController extends Controller
 		$pax = null;
 		$cargo = null;
 		
-		$hours = $time/60;
-
 		$fleettype = app('db')->select("select * from fleettypes where plane_icao=:aircraft",["aircraft"=>$aircraft]);
 		$aircraft_id = $fleettype[0]->fleettype_id;
 		
@@ -290,7 +288,7 @@ class FlightController extends Controller
 										"departure"=>$departure,
 										"arrival"=>$arrival,
 										"comments"=>$comments,
-										"time"=>$hours,
+										"time"=>$time,
 										"aircraft"=>$aircraft,
 										"fuel"=>$fuel,
 										"vam_id"=>$vam_id,
