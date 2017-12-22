@@ -184,7 +184,7 @@ class FlightController extends Controller
 
 		$route = app('db')->select("select route_id from routes where flight=:flight",['flight'=>$flight]);
 		if (count($route) < 1) { return response()->json(["Booking failed. The specified route does not exist."]); }
-		$route_id = $route[0]->route_id;
+		$route_id = $route[0]->route_id; 
 		
 		$plane = app('db')->select("select fleet_id from fleets where registry=:aircraft",['aircraft'=>$aircraft]);
 		if (count($plane) < 1) { return response()->json(["Booking failed. The specified aircraft does not exist."]); }
