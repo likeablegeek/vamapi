@@ -233,14 +233,14 @@ class PilotController extends Controller
 
 	}
 	
-	/* Check user authentication based on callsign and password */
+	/* Check user authentication based on callsign and MD5 hash of password */
 	public function auth_pilot($callsign, $cred) {
 	
-		$auth = app('db')->select("select gvauser_id, callsign, password from gvausers
+		$auth = app('db')->select("select gvauser_id, callsign from gvausers
 										where callsign=:callsign and password=:password",
 										[
 											"callsign"=>$callsign,
-											"password"=>md5($cred)
+											"password"=>$cred
 										]);
 		
 		return response()->json($auth);
