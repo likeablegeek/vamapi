@@ -237,13 +237,13 @@ class PilotController extends Controller
 	public function auth_pilot($callsign, $cred) {
 	
 		$auth = app('db')->select("select gvauser_id, callsign, password from gvausers
-									where callsign=:callsign and password=:password",
-									[
-										"callsign"=>$callsign,
-										"password"=>md5($cred)
-									]);
-									
-		return response->json($auth);
+										where callsign=:callsign and password=:password",
+										[
+											"callsign"=>$callsign,
+											"password"=>md5($cred)
+										]);
+		
+		return response()->json($auth);
 	
 	}
 	
