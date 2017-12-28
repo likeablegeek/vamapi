@@ -47,6 +47,12 @@ $router->get(
 	'PilotController@register_pilot'
 );
 
+// Validate pilot auth credentials
+$router->get(
+	'/pilots/auth/{callsign}/{cred}', 
+	'PilotController@auth_pilot'
+);
+
 // Provide list of VA parameters
 $router->get(
 	'/airline/params',
