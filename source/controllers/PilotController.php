@@ -69,19 +69,21 @@ class PilotController extends Controller
 
 	/* Create new VAM user */
 	public function create_vam_user($admin_id) {
-	
+
+		var $reply = "";
+			
 		if (is_vam_admin($admin_id)) {
 
-			$reply = "Creating new VAM user under admin user " + $admin_id;
-			return response()->json([$reply]);		
+			$reply = "Creating new VAM user under admin user $admin_id";
 		
 		} else {
 
 			$reply = "Permission denied."
-			return response()->json([$reply]);
 
 		}
 		
+		return response()->json([$reply]);		
+
 	}
 	
 	/* Register a pilot with the specified discord ID and related to the VAM callsign */
