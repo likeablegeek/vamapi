@@ -70,7 +70,7 @@ class PilotController extends Controller
 	/* Create new VAM user */
 	public function create_vam_user($admin_id) {
 
-		var $reply = "";
+		$reply = "";
 			
 		if (is_vam_admin($admin_id)) {
 
