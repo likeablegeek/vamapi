@@ -81,13 +81,16 @@ class PilotController extends Controller
 
 			$initial_password = md5(uniqid());
 			$default_language = strval(env('VAM_DEFAULT_LANG',false));
+			$default_user_type = intval(env('VAM_DEFAULT_USER_TYPE',false));
+			$default_email = "$new_callsign@VAMAPI";
 			
-			$sql = "insert into gvausers (register_date,activation,name,surname,callsign,password,language)
-                    values (now(),1,'$firstname','$lastname','$new_callsign','$initial_password','$default_language');";
+			$sql = "insert into gvausers (register_date,activation,name,surname,callsign,email,password,language,user_type_id,reg_comments)
+                    values (now(),1,'$firstname','$lastname','$new_callsign','$default_email','$initial_password','$default_language',$default_user_type,
+                    'User created from VAMAPI');";
                     
             $new_pilot = app('db')->select($sql);
 
-			$reply = "Created new VAM user with callsign [$new_callsign] with name [$firstname $lastname]";
+			$reply = "Created new VAM user with callsign [$new_callsign] with name [$firstname $lastname].";
 		
 		} else {
 
