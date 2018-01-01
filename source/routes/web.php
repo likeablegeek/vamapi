@@ -42,7 +42,7 @@ $router->get('/', function () use ($router) {
 
 // Create new VAM user
 $router->get(
-	'/pilots/create/{admin_id}',
+	'/pilots/create/{admin_id}/{firstname}/{lastname}',
 	'PilotController@create_vam_user'
 );
 

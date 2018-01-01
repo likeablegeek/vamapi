@@ -68,7 +68,7 @@ class PilotController extends Controller
 	*/
 
 	/* Create new VAM user */
-	public function create_vam_user($admin_id) {
+	public function create_vam_user($admin_id,$firstname,$lastname) {
 
 		$reply = "";
 			
@@ -76,12 +76,18 @@ class PilotController extends Controller
 		
 			$pilot = app('db')->select("select callsign from gvausers order by callsign desc limit 1");
 			$last_callsign = $pilot[0]->callsign;
-			
-			$callsign = substr($last_callsign,strlen(env('VAMAPI_USER_MAP',false)));
-			
-			$new_callsign = $last_callsign + 1;
+			$new_callsign_num = intval(substr($last_callsign,strlen(env('VAM_CALLSIGN_PREFIX',false)))) + 1;
+			$new_callsign = strval(env('VAM_CALLSIGN_PREFIX',false)) . str_pad($new_callsign_num, intval(env('VAM_CALLSIGN_NUM_LENGTH',false)), '0', STR_PAD_LEFT);
 
-			$reply = "Creating new VAM user under admin user $admin_id max callsign is $last_callsign and callsign number is $callsign";
+			$initial_password = md5(uniqid());
+			$default_language = strval(env('VAM_DEFAULT_LANG',false));
+			
+			$sql = "insert into gvausers (register_date,activation,name,surname,callsign,password,language)
+                    values (now(),1,'$firstname','$lastname','$new_callsign','$initial_password','$default_language');";
+                    
+            $new_pilot = app('db')->select($sql);
+
+			$reply = "Created new VAM user with callsign [$new_callsign] with name [$firstname $lastname]";
 		
 		} else {
 
