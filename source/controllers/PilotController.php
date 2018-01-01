@@ -77,7 +77,7 @@ class PilotController extends Controller
 			$pilot = app('db')->select("select callsign from gvausers order by callsign desc limit 1");
 			$last_callsign = $pilot[0]->callsign;
 			
-			$callsign = substr($last_callsign,env('VAMAPI_USER_MAP',false).length);
+			$callsign = substr($last_callsign,strlen(env('VAMAPI_USER_MAP',false)));
 			
 			$new_callsign = $last_callsign + 1;
 
