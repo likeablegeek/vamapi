@@ -78,7 +78,7 @@ class PilotController extends Controller
 			$last_callsign = $pilot[0]->callsign;
 			$new_callsign = $last_callsign + 1;
 
-			$reply = "Creating new VAM user under admin user $admin_id max callign is $last_callsign and new callsign is $new_callsign";
+			$reply = "Creating new VAM user under admin user $admin_id max callsign is $last_callsign and new callsign is $new_callsign";
 		
 		} else {
 
