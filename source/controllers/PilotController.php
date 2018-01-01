@@ -89,6 +89,8 @@ class PilotController extends Controller
 	/* Register a pilot with the specified discord ID and related to the VAM callsign */
 	public function register_pilot($admin_id,$external_id,$vam_callsign) {
 
+		$reply = "";
+
 		if (is_vam_admin($admin_id)) {
 		
 			$pilot = app('db')->select("select gvauser_id from gvausers gu where gu.callsign=:vam_callsign",['vam_callsign'=>$vam_callsign]);
@@ -97,19 +99,14 @@ class PilotController extends Controller
 			$register = app('db')->insert('insert into vamapi_user_map (external_id,vam_id) values (:external_id,:vam_id)', ['external_id'=>$external_id,'vam_id'=>$vam_id]);
 
 			$reply = "External user registered with callsign " + $vam_callsign + " and external ID " + $external_id;
-			return response()->json([$reply]);
 
-			return 0;
-			
 		} else {
 		
-			$reply = "Permission denied."
-			return response()->json([$reply]);
+			$reply = "Permission denied.";
 			
 		}
 		
-
-//		return 0;
+		return response()->json([$reply]);
 
 	}
 
