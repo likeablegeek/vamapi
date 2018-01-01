@@ -40,6 +40,12 @@ $router->get('/', function () use ($router) {
     return $router->version();
 });
 
+// Create new VAM user
+$router->get(
+	'/pilots/create/{admin_id}',
+	'PilotController@create_vam_user'
+);
+
 // Register new discord user with VAM and map to VAM pilot user
 // **TODO** Should only be available authorised admin users -- not regular pilots
 $router->get(
