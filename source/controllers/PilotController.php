@@ -76,7 +76,7 @@ class PilotController extends Controller
 		
 			$pilot = app('db')->select("select callsign from gvausers order by callsign desc limit 1");
 
-			$reply = "Creating new VAM user under admin user $admin_id max callign is " + $pilot[0]->callsign;
+			$reply = "Creating new VAM user under admin user $admin_id max callign is $pilot[0]->callsign";
 		
 		} else {
 
