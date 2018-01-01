@@ -89,9 +89,9 @@ class PilotController extends Controller
                     'User created from VAMAPI');";
                     
             $new_pilot = app('db')->select($sql);
+            
+            $reply = $new_callsign;
 
-			$reply = "Created new VAM user with callsign [$new_callsign] with name [$firstname $lastname].";
-		
 		} else {
 
 			$reply = "Permission denied.";
@@ -103,7 +103,7 @@ class PilotController extends Controller
 	}
 	
 	/* Register a pilot with the specified discord ID and related to the VAM callsign */
-	public function register_pilot($admin_id,$external_id,$vam_callsign) {
+	public function register_pilot($admin_id,$external_id,$external_username,$vam_callsign) {
 
 		$reply = "";
 
@@ -112,7 +112,14 @@ class PilotController extends Controller
 			$pilot = app('db')->select("select gvauser_id from gvausers gu where gu.callsign=:vam_callsign",['vam_callsign'=>$vam_callsign]);
 			$vam_id = $pilot[0]->gvauser_id;
 
-			$register = app('db')->insert('insert into vamapi_user_map (external_id,vam_id) values (:external_id,:vam_id)', ['external_id'=>$external_id,'vam_id'=>$vam_id]);
+			$register = app('db')->insert('insert into vamapi_user_map (external_id,vam_id,external_username,vam_callsign)
+											values (:external_id,:vam_id,:external_username,:vam_callsign)', 
+											[
+												'external_id'=>$external_id,
+												'vam_id'=>$vam_id,
+												'external_username'=>$external_username,
+												'vam_callsign'=>$vam_callsign
+											]);
 
 			$reply = "External user registered with callsign " + $vam_callsign + " and external ID " + $external_id;
 
