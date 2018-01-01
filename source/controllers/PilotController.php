@@ -78,7 +78,7 @@ class PilotController extends Controller
 		
 		} else {
 
-			$reply = "Permission denied."
+			$reply = "Permission denied.";
 
 		}
 		
