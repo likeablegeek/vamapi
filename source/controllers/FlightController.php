@@ -90,7 +90,7 @@ class FlightController extends Controller
 	/* Return list of flight available for the pilot to book */
 	public function available_flights($pilot) {
 
-		$vam_id = get_pilot_callsign($pilot);
+		$vam_id = get_pilot_vamid($pilot);
 
 		$pilot_route = app('db')->select("select route_id from gvausers gu where gu.gvauser_id=:vam_id",['vam_id'=>$vam_id]);
 
@@ -142,7 +142,7 @@ class FlightController extends Controller
 	/* Return list of aircraft available for a pilot to book on a specified flight */
 	public function available_aircraft($pilot,$flight) {
 
-		$vam_id = get_pilot_callsign($pilot);
+		$vam_id = get_pilot_vamid($pilot);
 
 		$route = app('db')->select("select route_id from routes where flight=:flight",['flight'=>$flight]);
 		$route_id = $route[0]->route_id;
@@ -180,7 +180,7 @@ class FlightController extends Controller
 	/* Book a flight with a specified aircraft for a specified pilot */
 	public function book_flight($pilot,$flight,$aircraft) {
 
-		$vam_id = get_pilot_callsign($pilot);
+		$vam_id = get_pilot_vamid($pilot);
 
 		$route = app('db')->select("select route_id from routes where flight=:flight",['flight'=>$flight]);
 		if (count($route) < 1) { return response()->json(["Booking failed. The specified route does not exist."]); }
@@ -235,7 +235,7 @@ class FlightController extends Controller
 	/* Pirep a flight */
 	public function pirep_flight($pilot,$date,$aircraft,$departure,$arrival,$distance,$time,$fuel,$comments) {
 
-		$vam_id = get_pilot_callsign($pilot);
+		$vam_id = get_pilot_vamid($pilot);
 
 		$charter = null;
 		$route_id = null;
@@ -407,7 +407,7 @@ class FlightController extends Controller
 	/* Cancel a flight for the specified pilot using a specified aircraft */
 	public function cancel_flight($pilot,$flight,$aircraft) {
 
-		$vam_id = get_pilot_callsign($pilot);
+		$vam_id = get_pilot_vamid($pilot);
 
 		$route = app('db')->select("select route_id from routes where flight=:flight",['flight'=>$flight]);
 		$route_id = $route[0]->route_id;

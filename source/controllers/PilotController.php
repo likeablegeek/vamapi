@@ -136,7 +136,7 @@ class PilotController extends Controller
 	/* Return a pilot's profile */
 	public function profile($pilot) {
 
-		$vam_id = get_pilot_callsign($pilot);
+		$vam_id = get_pilot_vamid($pilot);
 
 		$profile = app('db')->select("select *, 
 						date_format(register_date,'%Y-%m-%d') as register_date 
@@ -161,10 +161,50 @@ class PilotController extends Controller
 
 	}
 	
+	/* Allow pilot to change some of his profile data */
+	public function change_profile($pilot,$field,$value) {
+	
+		$vam_id = get_pilot_vamid($pilot);
+		
+		$reply = "";
+		$field_name = "";
+		
+		if ($field == 'firstname') $field_name = 'name';
+		if ($field == 'lastname') $field_name = 'surname';
+		if ($field == 'email') $field_name = 'email';
+		if ($field == 'ivao') $field_name = 'ivaovid';
+		if ($field == 'vatsim') $field_name = 'vatsimid';
+		if ($field == 'birthdate') $field_name = 'birth_date';
+		if ($field == 'country') $field_name = 'country';
+		if ($field == 'city') $field_name = 'city';
+		if ($field == 'password') { $field_name = 'password'; $value = md5($value); }
+		
+		if ($field_name != '') {
+
+			$sql = "update gvausers set $field_name='$value' where gvauser_id=$vam_id";
+					
+			$profile = app('db')->select($sql);
+
+			if ($field_name != 'password') {
+				$reply = "Changed [$field] to [$value].";
+			} else {
+				$reply = "Password set.";
+			}
+			
+		} else {
+		
+			$reply = "Change could not be made.";
+			
+		}
+		
+		return response()->json($reply);
+
+	}
+	
 	/* Return a list of flights flown by a pilot */
 	public function completed_flights($pilot) {
 
-		$vam_id = get_pilot_callsign($pilot);
+		$vam_id = get_pilot_vamid($pilot);
 
 		$flights = app('db')->select("select a1.iso_country as country_dep, 
 						a2.iso_country as country_arr ,
@@ -235,7 +275,7 @@ class PilotController extends Controller
 	/* Return a list of flights booked by a pilot */
 	public function booked_flights($pilot) {
 
-		$vam_id = get_pilot_callsign($pilot);
+		$vam_id = get_pilot_vamid($pilot);
 
 		$flights = app('db')->select("select a3.iso_country as alt_country, 
 						a3.name as alt_name,a1.name as dep_name, 

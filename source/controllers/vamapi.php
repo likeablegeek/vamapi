@@ -56,7 +56,7 @@
 	$this->auto_approval = $params[0]->auto_approval;
 	
 	// Get pilot callsign based on .env VAMAPI_USER_MAP attribute
-	function get_pilot_callsign($userid) {
+	function get_pilot_vamid($userid) {
 	
 		if (env('VAMAPI_USER_MAP',false) == "true") {
 

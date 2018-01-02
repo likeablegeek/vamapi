@@ -77,6 +77,12 @@ $router->get(
 	'PilotController@profile'
 );
 
+// Change a field in pilot's profile
+$router->get(
+	'/pilots/change/{pilot}/{field}/{value}',
+	'PilotController@change_profile'
+);
+
 // Provide list of all completed flights for a specified pilot
 $router->get(
 	'/pilots/flights/{pilot}',
