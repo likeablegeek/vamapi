@@ -174,7 +174,7 @@ class PilotController extends Controller
 		if (strtolower($field) == 'email') { $field_name = 'email'; $value = strtolower($value); }
 		if (strtolower($field) == 'ivao') $field_name = 'ivaovid';
 		if (strtolower($field) == 'vatsim') $field_name = 'vatsimid';
-		if (strtolower($field) == 'birthdate') $field_name = 'birth_date';
+		if (strtolower($field) == 'birthdate') { $field_name = 'birth_date'; $date = date_create($value); $value = date_format($date,'d/m/Y'); }
 		if (strtolower($field) == 'country') { $field_name = 'country'; $value = strtoupper($value); }
 		if (strtolower($field) == 'city') $field_name = 'city';
 		if (strtolower($field) == 'password') { $field_name = 'password'; $value = md5($value); }
@@ -197,7 +197,42 @@ class PilotController extends Controller
 			
 		}
 		
-		return response()->json($reply);
+		return response()->json([$reply]);
+
+	}
+	
+	/* Allow pilot to change some of his profile data */
+	public function change_profile_admin($pilot,$field,$value) {
+	
+		$reply = "";
+		$field_name = "";
+		
+		if (is_vam_admin($admin_id)) {
+
+			if (strtolower($field) == 'hub') { $field_name = 'hub_id'; $value = strtoupper($value); }
+			if (strtolower($field) == 'location') { $field_name = 'location'; $value = strtoupper($value); }
+		
+			if (strlen($field_name) > 0) {
+
+				$sql = "update gvausers set $field_name='$value' where callsign=$pilot";
+					
+				$profile = app('db')->select($sql);
+
+				$reply = "Changed [$field] to [$value] for user [$callsign].";
+			
+			} else {
+		
+				$reply = "Change could not be made.";
+			
+			}
+		
+		} else {
+		
+			$reply = "Permission denied.";
+			
+		}
+
+		return response()->json([$reply]);
 
 	}
 	
