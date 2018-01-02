@@ -169,17 +169,17 @@ class PilotController extends Controller
 		$reply = "";
 		$field_name = "";
 		
-		if ($field == 'firstname') $field_name = 'name';
-		if ($field == 'lastname') $field_name = 'surname';
-		if ($field == 'email') $field_name = 'email';
-		if ($field == 'ivao') $field_name = 'ivaovid';
-		if ($field == 'vatsim') $field_name = 'vatsimid';
-		if ($field == 'birthdate') $field_name = 'birth_date';
-		if ($field == 'country') $field_name = 'country';
-		if ($field == 'city') $field_name = 'city';
-		if ($field == 'password') { $field_name = 'password'; $value = md5($value); }
+		if (strtolower($field) == 'firstname') $field_name = 'name';
+		if (strtolower($field) == 'lastname') $field_name = 'surname';
+		if (strtolower($field) == 'email') { $field_name = 'email'; $value = strtolower($value); }
+		if (strtolower($field) == 'ivao') $field_name = 'ivaovid';
+		if (strtolower($field) == 'vatsim') $field_name = 'vatsimid';
+		if (strtolower($field) == 'birthdate') $field_name = 'birth_date';
+		if (strtolower($field) == 'country') { $field_name = 'country'; $value = strtoupper($value); }
+		if (strtolower($field) == 'city') $field_name = 'city';
+		if (strtolower($field) == 'password') { $field_name = 'password'; $value = md5($value); }
 		
-		if ($field_name != '') {
+		if (strlen($field_name) > 0) {
 
 			$sql = "update gvausers set $field_name='$value' where gvauser_id=$vam_id";
 					
