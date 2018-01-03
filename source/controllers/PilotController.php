@@ -133,6 +133,51 @@ class PilotController extends Controller
 
 	}
 
+	/* Return a specified pilot's profile */
+	public function admin_profile($admin_id,$pilot) {
+
+		$vam_id = get_pilot_vamid($pilot);
+
+		if (is_vam_admin($admin_id)) {
+
+			$profile = app('db')->select("select *, 
+							date_format(register_date,'%Y-%m-%d') as register_date 
+							FROM gvausers where gvauser_id=:vam_id",
+							[
+								"vam_id"=>$vam_id
+							]);
+
+			$hub = app('db')->select("select hub from hubs where hub_id=:hub_id",
+							["hub_id"=>$profile[0]->hub_id]);
+			if (count($hub) > 0) {
+				$profile[0]->hub = $hub[0]->hub;
+			} else {
+				$profile[0]->hub = "";
+			}
+		
+			$rank = app('db')->select("select rank from ranks where rank_id=:rank_id",
+							["rank_id"=>$profile[0]->rank_id]);
+			if (count($rank) > 0) {
+				$profile[0]->rank = $rank[0]->rank;
+			} else {
+				$profile[0]->rank = "";
+			}
+
+			// For debugging
+			$profile[0]->ip = env('AUTH_IP',false);
+			$profile[0]->va_date_format = $this->va_date_format;
+
+			return response()->json($profile);
+			
+		} else {
+		
+			$reply = "Premission denied.";
+			return response()->json([$reply]);
+			
+		}
+
+	}
+
 	/* Return a pilot's profile */
 	public function profile($pilot) {
 
@@ -147,11 +192,19 @@ class PilotController extends Controller
 
 		$hub = app('db')->select("select hub from hubs where hub_id=:hub_id",
 						["hub_id"=>$profile[0]->hub_id]);
-		$profile[0]->hub = $hub[0]->hub;
-
+		if (count($hub) > 0) {
+			$profile[0]->hub = $hub[0]->hub;
+		} else {
+			$profile[0]->hub = "";
+		}
+		
 		$rank = app('db')->select("select rank from ranks where rank_id=:rank_id",
 						["rank_id"=>$profile[0]->rank_id]);
-		$profile[0]->rank = $rank[0]->rank;
+		if (count($rank) > 0) {
+			$profile[0]->rank = $rank[0]->rank;
+		} else {
+			$profile[0]->rank = "";
+		}
 
 		// For debugging
 		$profile[0]->ip = env('AUTH_IP',false);
@@ -202,23 +255,38 @@ class PilotController extends Controller
 	}
 	
 	/* Allow pilot to change some of his profile data */
-	public function change_profile_admin($pilot,$field,$value) {
+	public function change_profile_admin($admin_id,$pilot,$field,$value) {
 	
 		$reply = "";
 		$field_name = "";
 		
 		if (is_vam_admin($admin_id)) {
 
-			if (strtolower($field) == 'hub') { $field_name = 'hub_id'; $value = strtoupper($value); }
+			if (strtolower($field) == 'hub') {
+				$field_name = 'hub_id';
+
+				$hub = app('db')->select("select hub_id from hubs where hub=:value",
+											["value"=>$value]);
+				$value = $hub[0]->hub_id;
+			}
 			if (strtolower($field) == 'location') { $field_name = 'location'; $value = strtoupper($value); }
+			if (strtolower($field) == 'firstname') $field_name = 'name';
+			if (strtolower($field) == 'lastname') $field_name = 'surname';
+			if (strtolower($field) == 'email') { $field_name = 'email'; $value = strtolower($value); }
+			if (strtolower($field) == 'ivao') $field_name = 'ivaovid';
+			if (strtolower($field) == 'vatsim') $field_name = 'vatsimid';
+			if (strtolower($field) == 'birthdate') { $field_name = 'birth_date'; $date = date_create($value); $value = date_format($date,'d/m/Y'); }
+			if (strtolower($field) == 'country') { $field_name = 'country'; $value = strtoupper($value); }
+			if (strtolower($field) == 'city') $field_name = 'city';
+			if (strtolower($field) == 'password') { $field_name = 'password'; $value = md5($value); }
 		
 			if (strlen($field_name) > 0) {
 
-				$sql = "update gvausers set $field_name='$value' where callsign=$pilot";
+				$sql = "update gvausers set $field_name='$value' where callsign='$pilot'";
 					
 				$profile = app('db')->select($sql);
 
-				$reply = "Changed [$field] to [$value] for user [$callsign].";
+				$reply = "Changed [$field] to [$value] for user [$pilot].";
 			
 			} else {
 		

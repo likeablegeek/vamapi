@@ -85,8 +85,14 @@ $router->get(
 
 // Change a field in pilot's profile
 $router->get(
-	'/pilots/admin_change/{pilot}/{field}/{value}',
+	'/pilots/admin_change/{admin_id}/{pilot}/{field}/{value}',
 	'PilotController@change_profile_admin'
+);
+
+// Get user profile for a specified pilot
+$router->get(
+	'/pilots/admin_profile/{admin_id}/{pilot}',
+	'PilotController@admin_profile'
 );
 
 // Provide list of all completed flights for a specified pilot

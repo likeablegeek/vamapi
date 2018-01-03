@@ -54,6 +54,7 @@
 	$this->va_date_format = $params[0]->date_format;
 	$this->va_time_format = $params[0]->time_format;
 	$this->auto_approval = $params[0]->auto_approval;
+	$this->acars_url = env('VAM_ACARS_URL',false);
 	
 	// Get pilot callsign based on .env VAMAPI_USER_MAP attribute
 	function get_pilot_vamid($userid) {
