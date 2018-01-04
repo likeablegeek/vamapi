@@ -133,6 +133,52 @@ class PilotController extends Controller
 
 	}
 
+	/* Suspend a pilot with the specified discord ID */
+	public function suspend_pilot($admin_id,$pilot) {
+
+		$vam_id = get_pilot_vamid($pilot);
+
+		$reply = "";
+
+		if (is_vam_admin($admin_id)) {
+		
+			$suspend = app('db')->select("update gvausers set activation=0 where gvauser_id=:vam_id",['vam_id'=>$vam_id]);
+
+			$reply = "Pilot " + $pilot + " suspended";
+
+		} else {
+		
+			$reply = "Permission denied.";
+			
+		}
+		
+		return response()->json([$reply]);
+
+	}
+
+	/* Activate a pilot with the specified discord ID */
+	public function activate_pilot($admin_id,$pilot) {
+
+		$vam_id = get_pilot_vamid($pilot);
+
+		$reply = "";
+
+		if (is_vam_admin($admin_id)) {
+		
+			$suspend = app('db')->select("update gvausers set activation=1 where gvauser_id=:vam_id",['vam_id'=>$vam_id]);
+
+			$reply = "Pilot " + $pilot + " activated";
+
+		} else {
+		
+			$reply = "Permission denied.";
+			
+		}
+		
+		return response()->json([$reply]);
+
+	}
+
 	/* Return a specified pilot's profile */
 	public function admin_profile($admin_id,$pilot) {
 

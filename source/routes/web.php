@@ -53,6 +53,18 @@ $router->get(
 	'PilotController@register_pilot'
 );
 
+// Suspend pilot
+$router->get(
+	'/pilots/suspend/{admin_id}/{pilot}',
+	'PilotController@suspend_pilot'
+);
+
+// Activate pilot
+$router->get(
+	'/pilots/activate/{admin_id}/{pilot}',
+	'PilotController@activate_pilot'
+);
+
 // Validate pilot auth credentials
 $router->get(
 	'/pilots/auth/{callsign}/{cred}', 
