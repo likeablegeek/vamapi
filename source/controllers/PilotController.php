@@ -144,7 +144,7 @@ class PilotController extends Controller
 		
 			$suspend = app('db')->select("update gvausers set activation=0 where gvauser_id=:vam_id",['vam_id'=>$vam_id]);
 
-			$reply = "Pilot " + $pilot + " suspended";
+			$reply = "Pilot [$pilot] suspended";
 
 		} else {
 		
@@ -167,7 +167,7 @@ class PilotController extends Controller
 		
 			$suspend = app('db')->select("update gvausers set activation=1 where gvauser_id=:vam_id",['vam_id'=>$vam_id]);
 
-			$reply = "Pilot " + $pilot + " activated";
+			$reply = "Pilot [$pilot] activated";
 
 		} else {
 		
@@ -277,6 +277,7 @@ class PilotController extends Controller
 		if (strtolower($field) == 'country') { $field_name = 'country'; $value = strtoupper($value); }
 		if (strtolower($field) == 'city') $field_name = 'city';
 		if (strtolower($field) == 'password') { $field_name = 'password'; $value = md5($value); }
+		if (strtolower($field) == 'location') $field_name = 'location';
 		
 		if (strlen($field_name) > 0) {
 
