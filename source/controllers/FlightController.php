@@ -76,7 +76,7 @@ class FlightController extends Controller
 		$flights = app('db')->select("select gvauser_id,a1.name as dep_name, a2.name as arr_name, a1.iso_country as 
 										dep_country,a2.iso_country as arr_country,callsign,pilot_name,departure,
 										arrival,DATE_FORMAT(date,:va_date_format) as date_string, date, 
-										format(time,0) as time from v_last_5_flights v, airports a1, airports a2
+										time as time from v_last_5_flights v, airports a1, airports a2
 										where v.departure=a1.ident and v.arrival=a2.ident and time is not null 
 										order by date desc",
 										[
