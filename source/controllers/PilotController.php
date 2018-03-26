@@ -74,7 +74,7 @@ class PilotController extends Controller
 			
 		if (is_vam_admin($admin_id)) {
 		
-			$pilot = app('db')->select("select callsign from gvausers order by callsign desc limit 1");
+			$pilot = app('db')->select("select callsign from gvausers where callsign like 'FAV%' order by callsign desc limit 1");
 			$last_callsign = $pilot[0]->callsign;
 			$new_callsign_num = intval(substr($last_callsign,strlen(env('VAM_CALLSIGN_PREFIX',false)))) + 1;
 			$new_callsign = strval(env('VAM_CALLSIGN_PREFIX',false)) . str_pad($new_callsign_num, intval(env('VAM_CALLSIGN_NUM_LENGTH',false)), '0', STR_PAD_LEFT);
